@@ -1,0 +1,41 @@
+ const { Selector } = require('testcafe');
+
+fixture`Login Tests`
+    .page`https://beta.deepthought.education/login`;
+
+// Test successful login with valid credentials
+test('Successful Login', async t => {
+    await t
+        .typeText('#usernameInput', 'yourValidUsername')
+        .typeText('#passwordInput', 'yourValidPassword')
+        .click('#loginButton')
+        .expect(Selector('#dashboardScreen').exists).ok();
+});
+
+// Test unsuccessful login attempts with invalid credentials
+test('Unsuccessful Login', async t => {
+    await t
+        .typeText('#usernameInput', 'invalidUsername')
+        .typeText('#passwordInput', 'invalidPassword')
+        .click('#loginButton')
+        .expect(Selector('.error-message').innerText).contains('Invalid username or password');
+});
+
+// Validate appropriate error messages for invalid login attempts
+test('Error Messages for Invalid Login Attempts', async t => {
+    await t
+        .typeText('#usernameInput', '')
+        .typeText('#passwordInput', '')
+        .click('#loginButton')
+        .expect(Selector('.error-message').innerText).contains('Please enter a valid username')
+        .expect(Selector('.error-message').innerText).contains('Password must contain at least 8 characters');
+});
+
+// On successful login, validate redirection to the dashboard screen
+test('Redirection to Dashboard', async t => {
+    await t
+        .typeText('#usernameInput', 'yourValidUsername')
+        .typeText('#passwordInput', 'yourValidPassword')
+        .click('#loginButton')
+        .expect(Selector('#dashboardScreen').exists).ok();
+});
